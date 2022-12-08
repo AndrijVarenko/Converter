@@ -34,7 +34,7 @@ class ConverterTest {
 				new BigDecimal (15.11f).setScale (2, RoundingMode.HALF_UP)))
 		.thenReturn(new BigDecimal (11.82f).setScale (2, RoundingMode.HALF_UP));
 		
-		assertEquals(new BigDecimal (11.82f).setScale (2, RoundingMode.HALF_UP), // 1. It should be only one call of tested object inside test. You can use parameterized tests
+		assertEquals(new BigDecimal (11.82f).setScale (2, RoundingMode.HALF_UP),
 				converter.conversionUSDtoEUR (
 						new BigDecimal (15.3f).setScale (2, RoundingMode.HALF_UP), 
 						new BigDecimal (15.11f).setScale (2, RoundingMode.HALF_UP)),  
