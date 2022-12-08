@@ -1,9 +1,7 @@
 package converter;
 
-public class AmountOrExchangeException extends Exception { //Usually exception class names end with ..Exception
-	/**
-	 * 
-	 */
+public class AmountOrExchangeException extends Exception {
+	
 	private static final long serialVersionUID = 1L;
 
 	/**
