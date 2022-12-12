@@ -10,12 +10,12 @@ public class ConverterWrapper implements ConstantsConverter {
 			throws CurrencyException, AmountOrExchangeException {
 		
 		if (isNotValid(amount, fee)) {
-			throw new AmountOrExchangeException ("Exception: Incorrectly specified amount/exchange");
+			throw new AmountOrExchangeException (MESSAGE_AMOUNT_OR_EXCHANGE_EXCEPTION);
 		}
 		
 		if (currency == null || currency.isEmpty() ||
 				(!currency.equalsIgnoreCase(USD) && !currency.equalsIgnoreCase(EUR))) {
-			throw new CurrencyException ("Exception: Incorrectly specified currency");
+			throw new CurrencyException (MESSAGE_CURRENCY_EXCEPTION);
 		}
 
 		String result = null;

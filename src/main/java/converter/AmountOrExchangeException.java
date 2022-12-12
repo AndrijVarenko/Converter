@@ -22,9 +22,4 @@ public class AmountOrExchangeException extends RuntimeException {
 	public AmountOrExchangeException (String message) {
 		super (message);
 	}
-
-	@Override
-	public String toString () {
-        return String.format("Exception: %s\n", "Incorrectly specified amount/exchange");
-    }
 }

@@ -8,7 +8,7 @@ public class Converter implements RateProvider, ConstantsConverter {
 	private BigDecimal conversion (BigDecimal amount, BigDecimal fee, BigDecimal rate)
 			throws AmountOrExchangeException {
 		if (isNotValid(amount, fee)) {
-			throw new AmountOrExchangeException ("Exception: Incorrectly specified amount/exchange");
+			throw new AmountOrExchangeException (MESSAGE_AMOUNT_OR_EXCHANGE_EXCEPTION);
 		}
 		
 		final BigDecimal oneHundred = new BigDecimal ("100.0")
@@ -30,7 +30,7 @@ public class Converter implements RateProvider, ConstantsConverter {
 			throws AmountOrExchangeException {
 		
 		if (isNotValid(amount, fee)) {
-			throw new AmountOrExchangeException ("Exception: Incorrectly specified amount/exchange");
+			throw new AmountOrExchangeException (MESSAGE_AMOUNT_OR_EXCHANGE_EXCEPTION);
 		}
 		
 		final BigDecimal rate = BigDecimal.valueOf(RateProvider.getRateUSDtoEUR())
@@ -42,7 +42,7 @@ public class Converter implements RateProvider, ConstantsConverter {
 	public BigDecimal conversionEURtoUSD (BigDecimal amount, BigDecimal fee) throws AmountOrExchangeException {
 		
 		if (isNotValid(amount, fee)) {
-			throw new AmountOrExchangeException ("Exception: Incorrectly specified amount/exchange");
+			throw new AmountOrExchangeException (MESSAGE_AMOUNT_OR_EXCHANGE_EXCEPTION);
 		}
 		
 		final BigDecimal rate = BigDecimal.valueOf(RateProvider.getRateEURtoUSD())

@@ -21,9 +21,4 @@ public class CurrencyException extends RuntimeException {
 	public CurrencyException (String message) {
 		super (message);
 	}
-
-	@Override
-	public String toString () {
-        return String.format("Exception: %s\n", "Incorrectly specified currency");
-    }
 }
