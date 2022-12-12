@@ -10,12 +10,12 @@ public class ConverterWrapper implements ConstantsConverter {
 			throws CurrencyException, AmountOrExchangeException {
 		
 		if (isNotValid(amount, fee)) {
-			throw new AmountOrExchangeException ();
+			throw new AmountOrExchangeException ("Exception: Incorrectly specified amount/exchange");
 		}
 		
 		if (currency == null || currency.isEmpty() ||
 				(!currency.equalsIgnoreCase(USD) && !currency.equalsIgnoreCase(EUR))) {
-			throw new CurrencyException ();
+			throw new CurrencyException ("Exception: Incorrectly specified currency");
 		}
 
 		String result = null;
@@ -25,7 +25,7 @@ public class ConverterWrapper implements ConstantsConverter {
 		}
 		
 		if (currency.equalsIgnoreCase (EUR)) {
-			result = String.format("%s %s = %s %s", amount, EUR, converter.conversionUSDtoEUR(amount, fee), USD);
+			result = String.format("%s %s = %s %s", amount, EUR, converter.conversionEURtoUSD(amount, fee), USD);
 		}
 		
 		return result;

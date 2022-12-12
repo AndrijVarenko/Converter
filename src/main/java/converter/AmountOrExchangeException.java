@@ -2,7 +2,7 @@ package converter;
 
 import java.io.Serial;
 
-public class AmountOrExchangeException extends Exception {
+public class AmountOrExchangeException extends RuntimeException {
 	
 	@Serial
 	private static final long serialVersionUID = 1L;
