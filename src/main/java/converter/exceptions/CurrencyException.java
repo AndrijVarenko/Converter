@@ -1,18 +1,7 @@
-package converter;
-
-import java.io.Serial;
+package converter.exceptions;
 
 public class CurrencyException extends RuntimeException {
     
-	@Serial
-	private static final long serialVersionUID = 1L;
-
-	/**
-	 * Default constructor.
-	 */
-	public CurrencyException () {
-	}
-
 	/**
 	 * Constructor with message.
 	 *

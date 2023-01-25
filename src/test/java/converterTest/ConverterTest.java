@@ -9,12 +9,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import converter.AmountOrExchangeException;
-import converter.Converter;
+import converter.exceptions.AmountOrExchangeException;
+import converter.classes.Converter;
 
 class ConverterTest {
 	
-	Converter converter;
+	private Converter converter;
+	private final int SCALE = 2;
 	
 	@BeforeEach                                         
     void setUp() {
@@ -25,25 +26,17 @@ class ConverterTest {
     @DisplayName("conversionUSDtoEUR() normal conversion should work")
     void conversionUSDtoEUR_Test() {
 		assertAll ("conversionUSDtoEUR() normal conversion",
-				() -> assertEquals(new BigDecimal ("11.82").setScale (2, RoundingMode.HALF_UP),
-				converter.conversionUSDtoEUR (
-						new BigDecimal ("15.3").setScale (2, RoundingMode.HALF_UP),
-						new BigDecimal ("15.11").setScale (2, RoundingMode.HALF_UP))),
+				() -> assertEquals (scale ("11.821", SCALE),
+				converter.conversionUSDtoEUR (scale ("15.3024", SCALE), scale ("15.11246", SCALE))),
 
-				() -> assertEquals(new BigDecimal ("15.00").setScale (2, RoundingMode.HALF_UP),
-				converter.conversionUSDtoEUR (
-						new BigDecimal ("18.73").setScale (2, RoundingMode.HALF_UP),
-						new BigDecimal ("12").setScale (2, RoundingMode.HALF_UP))),
+				() -> assertEquals (scale ("15.00", SCALE),
+				converter.conversionUSDtoEUR (scale ("18.733645", SCALE), scale ("12", SCALE))),
 
-				() -> assertEquals(new BigDecimal ("7.72").setScale (2, RoundingMode.HALF_UP),
-				converter.conversionUSDtoEUR (
-						new BigDecimal ("10").setScale (2, RoundingMode.HALF_UP),
-						new BigDecimal ("15.12").setScale (2, RoundingMode.HALF_UP))),
+				() -> assertEquals (scale ("7.7248", SCALE),
+				converter.conversionUSDtoEUR (scale ("10", SCALE), scale ("15.12", SCALE))),
 
-				() -> assertEquals(new BigDecimal ("5.73").setScale (2, RoundingMode.HALF_UP),
-				converter.conversionUSDtoEUR (
-						new BigDecimal ("7").setScale (2, RoundingMode.HALF_UP),
-						new BigDecimal ("10").setScale (2, RoundingMode.HALF_UP)))
+				() -> assertEquals (scale ("5.7348", SCALE),
+				converter.conversionUSDtoEUR (scale ("7", SCALE), scale ("10", SCALE)))
 		);
 	}
 
@@ -52,32 +45,25 @@ class ConverterTest {
 	void conversionUSDtoEUR_ExceptionTest() {
 		assertAll ("conversionUSDtoEUR() Exceptions",
 				() -> assertThrows (AmountOrExchangeException.class, () -> converter.conversionUSDtoEUR (
-						new BigDecimal ("0").setScale (2, RoundingMode.HALF_UP),
-						new BigDecimal ("12").setScale (2, RoundingMode.HALF_UP))),
+						scale ("0", SCALE), scale ("12", SCALE))),
 
 				() -> assertThrows (AmountOrExchangeException.class, () -> converter.conversionUSDtoEUR (
-						BigDecimal.valueOf(-18.73f).setScale (2, RoundingMode.HALF_UP),
-						new BigDecimal ("15").setScale (2, RoundingMode.HALF_UP))),
+						scale ("-18.73", SCALE), scale ("15", SCALE))),
 
 				() -> assertThrows (AmountOrExchangeException.class, () -> converter.conversionUSDtoEUR (
-						new BigDecimal ("25.75").setScale (2, RoundingMode.HALF_UP),
-						BigDecimal.valueOf(-35f).setScale (2, RoundingMode.HALF_UP))),
+						scale ("25.75", SCALE), scale ("-35", SCALE))),
 
 				() -> assertThrows (AmountOrExchangeException.class, () -> converter.conversionUSDtoEUR (
-						new BigDecimal ("45.73").setScale (2, RoundingMode.HALF_UP),
-						new BigDecimal ("100").setScale (2, RoundingMode.HALF_UP))),
+						scale ("45.73", SCALE), scale ("100", SCALE))),
 
 				() -> assertThrows (AmountOrExchangeException.class, () -> converter.conversionUSDtoEUR (
-						new BigDecimal ("55.73").setScale (2, RoundingMode.HALF_UP),
-						new BigDecimal ("100.01").setScale (2, RoundingMode.HALF_UP))),
+						scale ("55.73", SCALE), scale ("100.01", SCALE))),
 
 				() -> assertThrows (AmountOrExchangeException.class, () -> converter.conversionUSDtoEUR (
-						null,
-						new BigDecimal ("11").setScale (2, RoundingMode.HALF_UP))),
+						null, scale ("11", SCALE))),
 
 				() -> assertThrows (AmountOrExchangeException.class, () -> converter.conversionUSDtoEUR (
-						new BigDecimal ("12.73").setScale (2, RoundingMode.HALF_UP),
-						null))
+						scale ("12.73", SCALE), null))
 		);
 	}
 
@@ -85,25 +71,17 @@ class ConverterTest {
 	@DisplayName("conversionEURtoUSD() normal conversion should work")
 	void conversionEURtoUSD_Test() {
 		assertAll ("conversionEURtoUSD() normal conversion",
-				() -> assertEquals(new BigDecimal ("13.70").setScale (2, RoundingMode.HALF_UP),
-						converter.conversionEURtoUSD (
-								new BigDecimal ("15.11").setScale (2, RoundingMode.HALF_UP),
-								new BigDecimal ("10.23").setScale (2, RoundingMode.HALF_UP))),
+				() -> assertEquals(scale ("13.70", SCALE),
+						converter.conversionEURtoUSD (scale ("15.11", SCALE), scale ("10.23", SCALE))),
 
-				() -> assertEquals(new BigDecimal ("7.00").setScale (2, RoundingMode.HALF_UP),
-						converter.conversionEURtoUSD (
-								new BigDecimal ("7.15").setScale (2, RoundingMode.HALF_UP),
-								new BigDecimal ("3").setScale (2, RoundingMode.HALF_UP))),
+				() -> assertEquals(scale ("7.00", SCALE),
+						converter.conversionEURtoUSD (scale ("7.15", SCALE), scale ("3", SCALE))),
 
-				() -> assertEquals(new BigDecimal ("4.83").setScale (2, RoundingMode.HALF_UP),
-						converter.conversionEURtoUSD (
-								new BigDecimal ("5").setScale (2, RoundingMode.HALF_UP),
-								new BigDecimal ("4.32").setScale (2, RoundingMode.HALF_UP))),
+				() -> assertEquals(scale ("4.83", SCALE),
+						converter.conversionEURtoUSD (scale ("5", SCALE), scale ("4.32", SCALE))),
 
-				() -> assertEquals(new BigDecimal ("8.59").setScale (2, RoundingMode.HALF_UP),
-						converter.conversionEURtoUSD (
-								new BigDecimal ("10").setScale (2, RoundingMode.HALF_UP),
-								new BigDecimal ("15").setScale (2, RoundingMode.HALF_UP)))
+				() -> assertEquals(scale ("8.59", SCALE),
+						converter.conversionEURtoUSD (scale ("10", SCALE), scale ("15", SCALE)))
 		);
 	}
 
@@ -112,32 +90,34 @@ class ConverterTest {
 	void conversionEURtoUSD_ExceptionTest() {
 		assertAll ("conversionEURtoUSD() Exceptions",
 				() -> assertThrows (AmountOrExchangeException.class, () -> converter.conversionEURtoUSD (
-						new BigDecimal ("0").setScale (2, RoundingMode.HALF_UP),
-						new BigDecimal ("19").setScale (2, RoundingMode.HALF_UP))),
+						scale ("0", SCALE), scale ("19", SCALE))),
 
 				() -> assertThrows (AmountOrExchangeException.class, () -> converter.conversionEURtoUSD (
-						BigDecimal.valueOf(-17.33f).setScale (2, RoundingMode.HALF_UP),
-						new BigDecimal ("17").setScale (2, RoundingMode.HALF_UP))),
+						scale ("-17.33", SCALE), scale ("17", SCALE))),
 
 				() -> assertThrows (AmountOrExchangeException.class, () -> converter.conversionEURtoUSD (
-						new BigDecimal ("15.44").setScale (2, RoundingMode.HALF_UP),
-						BigDecimal.valueOf(-15f).setScale (2, RoundingMode.HALF_UP))),
+						scale ("15.44", SCALE), scale ("-15", SCALE))),
 
 				() -> assertThrows (AmountOrExchangeException.class, () -> converter.conversionEURtoUSD (
-						new BigDecimal ("25").setScale (2, RoundingMode.HALF_UP),
-						new BigDecimal ("100").setScale (2, RoundingMode.HALF_UP))),
+						scale ("25", SCALE), scale ("100", SCALE))),
 
 				() -> assertThrows (AmountOrExchangeException.class, () -> converter.conversionEURtoUSD (
-						new BigDecimal ("74").setScale (2, RoundingMode.HALF_UP),
-						new BigDecimal ("100.01").setScale (2, RoundingMode.HALF_UP))),
+						scale ("74", SCALE), scale ("100.01", SCALE))),
 
 				() -> assertThrows (AmountOrExchangeException.class, () -> converter.conversionEURtoUSD (
-						null,
-						new BigDecimal ("9").setScale (2, RoundingMode.HALF_UP))),
+						null, scale ("9", SCALE))),
 
 				() -> assertThrows (AmountOrExchangeException.class, () -> converter.conversionEURtoUSD (
-						new BigDecimal ("83").setScale (2, RoundingMode.HALF_UP),
+						scale ("83", SCALE),
 						null))
 		);
+	}
+
+	private BigDecimal scale (String bigDecimal, int newScale) {
+		return new BigDecimal (bigDecimal).setScale (newScale, RoundingMode.HALF_UP);
+	}
+
+	private BigDecimal scale (String bigDecimal) {
+		return new BigDecimal (bigDecimal).setScale (SCALE, RoundingMode.HALF_UP);
 	}
 }

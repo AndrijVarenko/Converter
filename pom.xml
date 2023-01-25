@@ -14,7 +14,7 @@
 	<name>converter</name>
 	<description>Currency converter</description>
 	<properties>
-		<java.version>18</java.version>
+		<java.version>8</java.version>
 	</properties>
 
 	<dependencies>

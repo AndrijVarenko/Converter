@@ -3,19 +3,20 @@ package converterTest;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import converter.CurrencyException;
+import converter.exceptions.CurrencyException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import converter.AmountOrExchangeException;
-import converter.ConverterWrapper;
+import converter.exceptions.AmountOrExchangeException;
+import converter.classes.ConverterWrapper;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class ConverterWrapperTest {
-	
-	ConverterWrapper converterWrapper;
+
+	private final int SCALE = 2;
+	private ConverterWrapper converterWrapper;
 	
 	@BeforeEach                                         
     void setUp() {
@@ -28,55 +29,31 @@ class ConverterWrapperTest {
 		//USD -> EUR
 		assertAll ("USD -> EUR convert() normal conversion",
 				() -> assertEquals("15.31 USD = 12.24 EUR",
-				converterWrapper.convert (
-						new BigDecimal ("15.31").setScale (2, RoundingMode.HALF_UP),
-						"USD",
-						new BigDecimal ("12.11").setScale (2, RoundingMode.HALF_UP))),
+				converterWrapper.convert (scale ("15.31", SCALE),"USD", scale ("12.11", SCALE))),
 
 				() -> assertEquals("7.32 USD = 5.93 EUR",
-				converterWrapper.convert (
-						new BigDecimal ("7.32").setScale (2, RoundingMode.HALF_UP),
-						"usd",
-						new BigDecimal ("11").setScale (2, RoundingMode.HALF_UP))),
+				converterWrapper.convert (scale ("7.32", SCALE),"usd", scale ("11", SCALE))),
 
 				() -> assertEquals("9.00 USD = 7.00 EUR",
-				converterWrapper.convert (
-						new BigDecimal ("9").setScale (2, RoundingMode.HALF_UP),
-						"USd",
-						new BigDecimal ("14.55").setScale (2, RoundingMode.HALF_UP))),
+				converterWrapper.convert (scale ("9", SCALE),"USd", scale ("14.55", SCALE))),
 
 				() -> assertEquals("3.00 USD = 2.32 EUR",
-				converterWrapper.convert (
-						new BigDecimal ("3").setScale (2, RoundingMode.HALF_UP),
-						"uSD",
-						new BigDecimal ("15").setScale (2, RoundingMode.HALF_UP)))
+				converterWrapper.convert (scale ("3", SCALE),"uSD", scale ("15", SCALE)))
 		);
 
 		//EUR -> USD
 		assertAll ("EUR -> USD convert() normal conversion",
 				() -> assertEquals("14.21 EUR = 12.84 USD",
-				converterWrapper.convert (
-						new BigDecimal ("14.21").setScale (2, RoundingMode.HALF_UP),
-						"Eur",
-						new BigDecimal ("10.51").setScale (2, RoundingMode.HALF_UP))),
+				converterWrapper.convert (scale ("14.21", SCALE),"Eur", scale ("10.51", SCALE))),
 
 				() -> assertEquals("5.44 EUR = 4.94 USD",
-				converterWrapper.convert (
-						new BigDecimal ("5.44").setScale (2, RoundingMode.HALF_UP),
-						"eUR",
-						new BigDecimal ("10").setScale (2, RoundingMode.HALF_UP))),
+				converterWrapper.convert (scale ("5.44", SCALE),"eUR", scale ("10", SCALE))),
 
 				() -> assertEquals("12.00 EUR = 10.89 USD",
-				converterWrapper.convert (
-						new BigDecimal ("12").setScale (2, RoundingMode.HALF_UP),
-						"EuR",
-						new BigDecimal ("10.15").setScale (2, RoundingMode.HALF_UP))),
+				converterWrapper.convert (scale ("12", SCALE),"EuR", scale ("10.15", SCALE))),
 
 				() -> assertEquals("7.00 EUR = 5.87 USD",
-				converterWrapper.convert (
-						new BigDecimal ("7").setScale (2, RoundingMode.HALF_UP),
-						"EUR",
-						new BigDecimal ("17").setScale (2, RoundingMode.HALF_UP)))
+				converterWrapper.convert (scale ("7", SCALE),"EUR", scale ("17", SCALE)))
 		);
 	}
 
@@ -86,107 +63,75 @@ class ConverterWrapperTest {
 		// Test Exceptions USD -> EUR
 		assertAll ("USD -> EUR convert() Exception should work",
 				() -> assertThrows (AmountOrExchangeException.class, () -> converterWrapper.convert (
-						new BigDecimal ("0").setScale (2, RoundingMode.HALF_UP),
-						"USD",
-						new BigDecimal ("15").setScale (2, RoundingMode.HALF_UP))),
+						scale ("0", SCALE),"USD", scale ("15", SCALE))),
 
 				() -> assertThrows (AmountOrExchangeException.class, () -> converterWrapper.convert (
-						BigDecimal.valueOf(-15.23f).setScale (2, RoundingMode.HALF_UP),
-						"USD",
-						new BigDecimal ("17").setScale (2, RoundingMode.HALF_UP))),
+						scale ("-15.23", SCALE),"USD", scale ("17", SCALE))),
 
 				() -> assertThrows (AmountOrExchangeException.class, () -> converterWrapper.convert (
-						new BigDecimal ("19.33").setScale (2, RoundingMode.HALF_UP),
-						"USD",
-						BigDecimal.valueOf(-10f).setScale (2, RoundingMode.HALF_UP))),
+						scale ("19.33", SCALE),"USD", scale ("-10", SCALE))),
 
 				() -> assertThrows (AmountOrExchangeException.class, () -> converterWrapper.convert (
-						new BigDecimal ("20.03").setScale (2, RoundingMode.HALF_UP),
-						"USD",
-						new BigDecimal ("100").setScale (2, RoundingMode.HALF_UP))),
+						scale ("20.03", SCALE),"USD", scale ("100", SCALE))),
 
 				() -> assertThrows (AmountOrExchangeException.class, () -> converterWrapper.convert (
-						new BigDecimal ("17.73").setScale (2, RoundingMode.HALF_UP),
-						"USD",
-						new BigDecimal ("100.01").setScale (2, RoundingMode.HALF_UP))),
+						scale ("17.73", SCALE),"USD", scale ("100.01", SCALE))),
 
 				() -> assertThrows (AmountOrExchangeException.class, () -> converterWrapper.convert (
-						null,
-						"USD",
-						new BigDecimal ("10").setScale (2, RoundingMode.HALF_UP))),
+						null,"USD", scale ("10", SCALE))),
 
 				() -> assertThrows (AmountOrExchangeException.class, () -> converterWrapper.convert (
-						new BigDecimal ("14.23").setScale (2, RoundingMode.HALF_UP),
-						"USD",
-						null)),
+						scale ("14.23", SCALE),"USD", null)),
 
 				() -> assertThrows (CurrencyException.class, () -> converterWrapper.convert (
-						new BigDecimal ("54.11").setScale (2, RoundingMode.HALF_UP),
-						null,
-						new BigDecimal ("81").setScale (2, RoundingMode.HALF_UP))),
+						scale ("54.11", SCALE),null, scale ("81", SCALE))),
 
 				() -> assertThrows (CurrencyException.class, () -> converterWrapper.convert (
-						new BigDecimal ("28.23").setScale (2, RoundingMode.HALF_UP),
-						"",
-						new BigDecimal ("29").setScale (2, RoundingMode.HALF_UP))),
+						scale ("28.23", SCALE),"", scale ("29", SCALE))),
 
 				() -> assertThrows (CurrencyException.class, () -> converterWrapper.convert (
-						new BigDecimal ("33.99").setScale (2, RoundingMode.HALF_UP),
-						"notUSD",
-						new BigDecimal ("32").setScale (2, RoundingMode.HALF_UP)))
+						scale ("33.99", SCALE),"notUSD", scale ("32", SCALE)))
 		);
 
 		// Test Exceptions EUR -> USD
 		assertAll ("EUR -> USD convert() Exception should work",
 				() -> assertThrows (AmountOrExchangeException.class, () -> converterWrapper.convert (
-						new BigDecimal ("0").setScale (2, RoundingMode.HALF_UP),
-						"EUR",
-						new BigDecimal ("19").setScale (2, RoundingMode.HALF_UP))),
+						scale ("0", SCALE),"EUR", scale ("19", SCALE))),
 
 				() -> assertThrows (AmountOrExchangeException.class, () -> converterWrapper.convert (
-						BigDecimal.valueOf(-37.33f).setScale (2, RoundingMode.HALF_UP),
-						"EUR",
-						new BigDecimal ("27").setScale (2, RoundingMode.HALF_UP))),
+						scale ("-37.33", SCALE),"EUR", scale ("27", SCALE))),
 
 				() -> assertThrows (AmountOrExchangeException.class, () -> converterWrapper.convert (
-						new BigDecimal ("53.44").setScale (2, RoundingMode.HALF_UP),
-						"EUR",
-						BigDecimal.valueOf(-16f).setScale (2, RoundingMode.HALF_UP))),
+						scale ("53.44", SCALE),"EUR", scale ("-16", SCALE))),
 
 				() -> assertThrows (AmountOrExchangeException.class, () -> converterWrapper.convert (
-						new BigDecimal ("16").setScale (2, RoundingMode.HALF_UP),
-						"EUR",
-						new BigDecimal ("100").setScale (2, RoundingMode.HALF_UP))),
+						scale ("16", SCALE),"EUR", scale ("100", SCALE))),
 
 				() -> assertThrows (AmountOrExchangeException.class, () -> converterWrapper.convert (
-						new BigDecimal ("24").setScale (2, RoundingMode.HALF_UP),
-						"EUR",
-						new BigDecimal ("100.01").setScale (2, RoundingMode.HALF_UP))),
+						scale ("24", SCALE),"EUR", scale ("100.01", SCALE))),
 
 				() -> assertThrows (AmountOrExchangeException.class, () -> converterWrapper.convert (
-						null,
-						"EUR",
-						new BigDecimal ("15").setScale (2, RoundingMode.HALF_UP))),
+						null,"EUR", scale ("15", SCALE))),
 
 				() -> assertThrows (AmountOrExchangeException.class, () -> converterWrapper.convert (
-						new BigDecimal ("95").setScale (2, RoundingMode.HALF_UP),
-						"EUR",
-						null)),
+						scale ("95", SCALE),"EUR", null)),
 
 				() -> assertThrows (CurrencyException.class, () -> converterWrapper.convert (
-						new BigDecimal ("31.22").setScale (2, RoundingMode.HALF_UP),
-						null,
-						new BigDecimal ("55").setScale (2, RoundingMode.HALF_UP))),
+						scale ("31.22", SCALE),null, scale ("55", SCALE))),
 
 				() -> assertThrows (CurrencyException.class, () -> converterWrapper.convert (
-						new BigDecimal ("58.23").setScale (2, RoundingMode.HALF_UP),
-						"",
-						new BigDecimal ("42").setScale (2, RoundingMode.HALF_UP))),
+						scale ("58.23", SCALE),"", scale ("42", SCALE))),
 
 				() -> assertThrows (CurrencyException.class, () -> converterWrapper.convert (
-						new BigDecimal ("57.88").setScale (2, RoundingMode.HALF_UP),
-						"notEUR",
-						new BigDecimal ("28").setScale (2, RoundingMode.HALF_UP)))
+						scale ("57.88", SCALE),"notEUR", scale ("28", SCALE)))
 		);
+	}
+
+	private BigDecimal scale (String bigDecimal, int newScale) {
+		return new BigDecimal (bigDecimal).setScale (newScale, RoundingMode.HALF_UP);
+	}
+
+	private BigDecimal scale (String bigDecimal) {
+		return new BigDecimal (bigDecimal).setScale (SCALE, RoundingMode.HALF_UP);
 	}
 }

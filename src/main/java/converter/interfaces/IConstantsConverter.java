@@ -1,6 +1,6 @@
-package converter;
+package converter.interfaces;
 
-public interface ConstantsConverter {
+public interface IConstantsConverter {
 	
 	String USD = "USD";
 	String EUR = "EUR";

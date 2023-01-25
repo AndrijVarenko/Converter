@@ -1,19 +1,7 @@
-package converter;
-
-import java.io.Serial;
+package converter.exceptions;
 
 public class AmountOrExchangeException extends RuntimeException {
 	
-	@Serial
-	private static final long serialVersionUID = 1L;
-
-	/**
-	 * Default constructor.
-	 */
-
-	public AmountOrExchangeException () {
-	}
-
 	/**
 	 * Constructor with message.
 	 *
