@@ -1,14 +1,13 @@
 package converterTest;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 
-import converter.exceptions.CurrencyException;
+import converter.exceptions.UnsupportedCurrencyException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import converter.exceptions.AmountOrExchangeException;
+import converter.exceptions.InvalidAmountOrExchangeRateException;
 import converter.classes.ConverterWrapper;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,31 +28,31 @@ class ConverterWrapperTest {
 		//USD -> EUR
 		assertAll ("USD -> EUR convert() normal conversion",
 				() -> assertEquals("15.31 USD = 12.24 EUR",
-				converterWrapper.convert (scale ("15.31", SCALE),"USD", scale ("12.11", SCALE))),
+				converterWrapper.convert (new BigDecimal("15.31"),"USD", new BigDecimal("12.11"))),
 
 				() -> assertEquals("7.32 USD = 5.93 EUR",
-				converterWrapper.convert (scale ("7.32", SCALE),"usd", scale ("11", SCALE))),
+				converterWrapper.convert (new BigDecimal("7.32"),"usd", new BigDecimal("11"))),
 
 				() -> assertEquals("9.00 USD = 7.00 EUR",
-				converterWrapper.convert (scale ("9", SCALE),"USd", scale ("14.55", SCALE))),
+				converterWrapper.convert (new BigDecimal("9"),"USd", new BigDecimal("14.55"))),
 
 				() -> assertEquals("3.00 USD = 2.32 EUR",
-				converterWrapper.convert (scale ("3", SCALE),"uSD", scale ("15", SCALE)))
+				converterWrapper.convert (new BigDecimal("3"),"uSD", new BigDecimal("15")))
 		);
 
 		//EUR -> USD
 		assertAll ("EUR -> USD convert() normal conversion",
 				() -> assertEquals("14.21 EUR = 12.84 USD",
-				converterWrapper.convert (scale ("14.21", SCALE),"Eur", scale ("10.51", SCALE))),
+				converterWrapper.convert (new BigDecimal("14.21"),"Eur", new BigDecimal("10.51"))),
 
 				() -> assertEquals("5.44 EUR = 4.94 USD",
-				converterWrapper.convert (scale ("5.44", SCALE),"eUR", scale ("10", SCALE))),
+				converterWrapper.convert (new BigDecimal("5.44"),"eUR", new BigDecimal("10"))),
 
 				() -> assertEquals("12.00 EUR = 10.89 USD",
-				converterWrapper.convert (scale ("12", SCALE),"EuR", scale ("10.15", SCALE))),
+				converterWrapper.convert (new BigDecimal("12"),"EuR", new BigDecimal("10.15"))),
 
 				() -> assertEquals("7.00 EUR = 5.87 USD",
-				converterWrapper.convert (scale ("7", SCALE),"EUR", scale ("17", SCALE)))
+				converterWrapper.convert (new BigDecimal("7"),"EUR", new BigDecimal("17")))
 		);
 	}
 
@@ -62,76 +61,68 @@ class ConverterWrapperTest {
 	void convertExceptionTest () {
 		// Test Exceptions USD -> EUR
 		assertAll ("USD -> EUR convert() Exception should work",
-				() -> assertThrows (AmountOrExchangeException.class, () -> converterWrapper.convert (
-						scale ("0", SCALE),"USD", scale ("15", SCALE))),
+				() -> assertThrows (InvalidAmountOrExchangeRateException.class, () -> converterWrapper.convert (
+						new BigDecimal("0"),"USD", new BigDecimal("15"))),
 
-				() -> assertThrows (AmountOrExchangeException.class, () -> converterWrapper.convert (
-						scale ("-15.23", SCALE),"USD", scale ("17", SCALE))),
+				() -> assertThrows (InvalidAmountOrExchangeRateException.class, () -> converterWrapper.convert (
+						new BigDecimal("-15.23"),"USD", new BigDecimal("17"))),
 
-				() -> assertThrows (AmountOrExchangeException.class, () -> converterWrapper.convert (
-						scale ("19.33", SCALE),"USD", scale ("-10", SCALE))),
+				() -> assertThrows (InvalidAmountOrExchangeRateException.class, () -> converterWrapper.convert (
+						new BigDecimal("19.33"),"USD", new BigDecimal("-10"))),
 
-				() -> assertThrows (AmountOrExchangeException.class, () -> converterWrapper.convert (
-						scale ("20.03", SCALE),"USD", scale ("100", SCALE))),
+				() -> assertThrows (InvalidAmountOrExchangeRateException.class, () -> converterWrapper.convert (
+						new BigDecimal("20.03"),"USD", new BigDecimal("100"))),
 
-				() -> assertThrows (AmountOrExchangeException.class, () -> converterWrapper.convert (
-						scale ("17.73", SCALE),"USD", scale ("100.01", SCALE))),
+				() -> assertThrows (InvalidAmountOrExchangeRateException.class, () -> converterWrapper.convert (
+						new BigDecimal("17.73"),"USD", new BigDecimal("100.01"))),
 
-				() -> assertThrows (AmountOrExchangeException.class, () -> converterWrapper.convert (
-						null,"USD", scale ("10", SCALE))),
+				() -> assertThrows (InvalidAmountOrExchangeRateException.class, () -> converterWrapper.convert (
+						null,"USD", new BigDecimal("10"))),
 
-				() -> assertThrows (AmountOrExchangeException.class, () -> converterWrapper.convert (
-						scale ("14.23", SCALE),"USD", null)),
+				() -> assertThrows (InvalidAmountOrExchangeRateException.class, () -> converterWrapper.convert (
+						new BigDecimal("14.23"),"USD", null)),
 
-				() -> assertThrows (CurrencyException.class, () -> converterWrapper.convert (
-						scale ("54.11", SCALE),null, scale ("81", SCALE))),
+				() -> assertThrows (UnsupportedCurrencyException.class, () -> converterWrapper.convert (
+						new BigDecimal("54.11"),null, new BigDecimal("81"))),
 
-				() -> assertThrows (CurrencyException.class, () -> converterWrapper.convert (
-						scale ("28.23", SCALE),"", scale ("29", SCALE))),
+				() -> assertThrows (UnsupportedCurrencyException.class, () -> converterWrapper.convert (
+						new BigDecimal("28.23"),"", new BigDecimal("29"))),
 
-				() -> assertThrows (CurrencyException.class, () -> converterWrapper.convert (
-						scale ("33.99", SCALE),"notUSD", scale ("32", SCALE)))
+				() -> assertThrows (UnsupportedCurrencyException.class, () -> converterWrapper.convert (
+						new BigDecimal("33.99"),"notUSD", new BigDecimal("32")))
 		);
 
 		// Test Exceptions EUR -> USD
 		assertAll ("EUR -> USD convert() Exception should work",
-				() -> assertThrows (AmountOrExchangeException.class, () -> converterWrapper.convert (
-						scale ("0", SCALE),"EUR", scale ("19", SCALE))),
+				() -> assertThrows (InvalidAmountOrExchangeRateException.class, () -> converterWrapper.convert (
+						new BigDecimal("0"),"EUR", new BigDecimal("19"))),
 
-				() -> assertThrows (AmountOrExchangeException.class, () -> converterWrapper.convert (
-						scale ("-37.33", SCALE),"EUR", scale ("27", SCALE))),
+				() -> assertThrows (InvalidAmountOrExchangeRateException.class, () -> converterWrapper.convert (
+						new BigDecimal("-37.33"),"EUR", new BigDecimal("27"))),
 
-				() -> assertThrows (AmountOrExchangeException.class, () -> converterWrapper.convert (
-						scale ("53.44", SCALE),"EUR", scale ("-16", SCALE))),
+				() -> assertThrows (InvalidAmountOrExchangeRateException.class, () -> converterWrapper.convert (
+						new BigDecimal("53.44"),"EUR", new BigDecimal("-16"))),
 
-				() -> assertThrows (AmountOrExchangeException.class, () -> converterWrapper.convert (
-						scale ("16", SCALE),"EUR", scale ("100", SCALE))),
+				() -> assertThrows (InvalidAmountOrExchangeRateException.class, () -> converterWrapper.convert (
+						new BigDecimal("16"),"EUR", new BigDecimal("100"))),
 
-				() -> assertThrows (AmountOrExchangeException.class, () -> converterWrapper.convert (
-						scale ("24", SCALE),"EUR", scale ("100.01", SCALE))),
+				() -> assertThrows (InvalidAmountOrExchangeRateException.class, () -> converterWrapper.convert (
+						new BigDecimal("24"),"EUR", new BigDecimal("100.01"))),
 
-				() -> assertThrows (AmountOrExchangeException.class, () -> converterWrapper.convert (
-						null,"EUR", scale ("15", SCALE))),
+				() -> assertThrows (InvalidAmountOrExchangeRateException.class, () -> converterWrapper.convert (
+						null,"EUR", new BigDecimal("15"))),
 
-				() -> assertThrows (AmountOrExchangeException.class, () -> converterWrapper.convert (
-						scale ("95", SCALE),"EUR", null)),
+				() -> assertThrows (InvalidAmountOrExchangeRateException.class, () -> converterWrapper.convert (
+						new BigDecimal("95"),"EUR", null)),
 
-				() -> assertThrows (CurrencyException.class, () -> converterWrapper.convert (
-						scale ("31.22", SCALE),null, scale ("55", SCALE))),
+				() -> assertThrows (UnsupportedCurrencyException.class, () -> converterWrapper.convert (
+						new BigDecimal("31.22"),null, new BigDecimal("55"))),
 
-				() -> assertThrows (CurrencyException.class, () -> converterWrapper.convert (
-						scale ("58.23", SCALE),"", scale ("42", SCALE))),
+				() -> assertThrows (UnsupportedCurrencyException.class, () -> converterWrapper.convert (
+						new BigDecimal("58.23"),"", new BigDecimal("42"))),
 
-				() -> assertThrows (CurrencyException.class, () -> converterWrapper.convert (
-						scale ("57.88", SCALE),"notEUR", scale ("28", SCALE)))
+				() -> assertThrows (UnsupportedCurrencyException.class, () -> converterWrapper.convert (
+						new BigDecimal("57.88"),"notEUR", new BigDecimal("28")))
 		);
-	}
-
-	private BigDecimal scale (String bigDecimal, int newScale) {
-		return new BigDecimal (bigDecimal).setScale (newScale, RoundingMode.HALF_UP);
-	}
-
-	private BigDecimal scale (String bigDecimal) {
-		return new BigDecimal (bigDecimal).setScale (SCALE, RoundingMode.HALF_UP);
 	}
 }

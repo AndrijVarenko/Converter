@@ -1,42 +1,38 @@
 package converter.classes;
 
-import converter.exceptions.AmountOrExchangeException;
-import converter.exceptions.CurrencyException;
-import converter.interfaces.IConstantsConverter;
+import converter.ConstantRateProvider;
+import converter.exceptions.InvalidAmountOrExchangeRateException;
+import converter.exceptions.UnsupportedCurrencyException;
 
 import java.math.BigDecimal;
 
-public class ConverterWrapper implements IConstantsConverter {
+public class ConverterWrapper {
 
-	private final Converter converter = new Converter ();
+	public static final String USD = "USD";
+	public static final String EUR = "EUR";
+	private final Converter converter = new Converter ( new ConstantRateProvider(), 2);
 
 	//Create Java Doc
 	public String convert (BigDecimal amount, String currency, BigDecimal fee)
-			throws CurrencyException, AmountOrExchangeException {
+			throws UnsupportedCurrencyException, InvalidAmountOrExchangeRateException {
 		
 		if (isNotValidAmountOrFee(amount, fee)) {
-			throw new AmountOrExchangeException (MESSAGE_AMOUNT_OR_EXCHANGE_EXCEPTION);
+			throw new InvalidAmountOrExchangeRateException();
 		}
 		
 		if (isNotValidCurrency(currency)) {
-			throw new CurrencyException (MESSAGE_CURRENCY_EXCEPTION);
+			throw new UnsupportedCurrencyException();
 		}
 
-		String result;
-
-		//Create currency list (enum)
+		//TODO Create currency list (enum)
 		switch (currency.toUpperCase()) {
 			case USD:
-				result = String.format("%s %s = %s %s", amount, USD, converter.conversionUSDtoEUR(amount, fee), EUR);
-				break;
+				return String.format("%s %s = %s %s", amount, USD, converter.conversionUSDtoEUR(amount, fee), EUR);
 			case EUR:
-				result = String.format("%s %s = %s %s", amount, EUR, converter.conversionEURtoUSD(amount, fee), USD);
-				break;
+				return String.format("%s %s = %s %s", amount, EUR, converter.conversionEURtoUSD(amount, fee), USD);
 			default:
-				throw new CurrencyException (MESSAGE_CURRENCY_EXCEPTION);
+				throw new UnsupportedCurrencyException();
 		}
-
-		return result;
 	}
 
 	private boolean isNotValidAmountOrFee(BigDecimal amount, BigDecimal fee) {

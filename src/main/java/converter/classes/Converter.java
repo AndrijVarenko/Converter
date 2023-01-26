@@ -1,23 +1,27 @@
 package converter.classes;
 
-import converter.exceptions.AmountOrExchangeException;
-import converter.interfaces.IConstantsConverter;
+import converter.exceptions.InvalidAmountOrExchangeRateException;
 import converter.interfaces.IRateProvider;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-public class Converter implements IConstantsConverter {
+public class Converter {
+	private final IRateProvider rateProvider;
+	private int scale = 2;
+	private final BigDecimal ONE_HUNDRED = new BigDecimal ("100.0").setScale(scale, RoundingMode.HALF_UP);
+	private final BigDecimal ONE = new BigDecimal ("1.0").setScale(scale, RoundingMode.HALF_UP);
 
-	private int newScale = 2;
-	private final BigDecimal ONE_HUNDRED = new BigDecimal ("100.0").setScale (newScale, RoundingMode.HALF_UP);
-	private final BigDecimal ONE = new BigDecimal ("1.0").setScale (newScale, RoundingMode.HALF_UP);
+	public Converter(IRateProvider rateProvider, int scale) {
+		this.rateProvider = rateProvider;
+		this.scale = scale;
+	}
 
-	private BigDecimal conversion (BigDecimal amount, BigDecimal fee, BigDecimal rate)
-			throws AmountOrExchangeException {
+	private BigDecimal convert(BigDecimal amount, BigDecimal fee, BigDecimal rate)
+			throws InvalidAmountOrExchangeRateException {
 
 		if (isNotValid(amount, fee)) {
-			throw new AmountOrExchangeException (MESSAGE_AMOUNT_OR_EXCHANGE_EXCEPTION);
+			throw new InvalidAmountOrExchangeRateException();
 		}
 
 		/*
@@ -26,47 +30,36 @@ public class Converter implements IConstantsConverter {
 		 * amount => [0; +∞)
 		 */
 
-		return scale (amount.multiply(rate).multiply((ONE.subtract(fee.divide(ONE_HUNDRED)))), newScale);
+		return amount.multiply(rate).multiply((ONE.subtract(fee.divide(ONE_HUNDRED)))).setScale(scale, RoundingMode.HALF_UP);
 	}
 
-	//Create Java Doc
+	//FIXME Create Java Doc
 	public BigDecimal conversionUSDtoEUR (BigDecimal amount, BigDecimal fee)
-			throws AmountOrExchangeException {
+			throws InvalidAmountOrExchangeRateException {
 		
 		if (isNotValid(amount, fee)) {
-			throw new AmountOrExchangeException (MESSAGE_AMOUNT_OR_EXCHANGE_EXCEPTION);
+			throw new InvalidAmountOrExchangeRateException();
 		}
 
-		return conversion (amount, fee, IRateProvider.getRateUsdToEur());
+		return convert(amount, fee, rateProvider.getRateUsdToEur());
 	}
 
-	//Create Java Doc
+	//TODO Create Java Doc
 	public BigDecimal conversionEURtoUSD (BigDecimal amount, BigDecimal fee)
-			throws AmountOrExchangeException {
+			throws InvalidAmountOrExchangeRateException {
 		
 		if (isNotValid(amount, fee)) {
-			throw new AmountOrExchangeException (MESSAGE_AMOUNT_OR_EXCHANGE_EXCEPTION);
+			throw new InvalidAmountOrExchangeRateException();
 		}
 		
-		return conversion (amount, fee, IRateProvider.getRateEurToUsd());
+		return convert(amount, fee, rateProvider.getRateEurToUsd());
 	}
 
+	//NIT: I'd prefer isValid checks everywhere
 	private boolean isNotValid (BigDecimal amount, BigDecimal fee) {
 		return amount == null || fee == null ||
 				fee.doubleValue() >= 100 || fee.doubleValue() < 0 ||
 				amount.doubleValue() <= 0;
-	}
-
-	public int getScale () {
-		return newScale;
-	}
-
-	public void setScale (int newScale) {
-		this.newScale = newScale;
-	}
-
-	private BigDecimal scale (BigDecimal bigDecimal, int newScale) {
-		return bigDecimal.setScale (newScale, RoundingMode.HALF_UP);
 	}
 
 }
