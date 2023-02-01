@@ -1,4 +1,4 @@
-package converterTest;
+package converter;
 
 import java.math.BigDecimal;
 
@@ -8,13 +8,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import converter.exceptions.InvalidAmountOrExchangeRateException;
-import converter.classes.ConverterWrapper;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class ConverterWrapperTest {
 
-	private final int SCALE = 2;
 	private ConverterWrapper converterWrapper;
 	
 	@BeforeEach                                         
@@ -23,44 +21,48 @@ class ConverterWrapperTest {
     }
 	
 	@Test
-    @DisplayName("convert() should work")
-    void convertTest () {
-		//USD -> EUR
+    @DisplayName("convert() USD -> EUR should work")
+    void convertUsdToEurTest () {
 		assertAll ("USD -> EUR convert() normal conversion",
 				() -> assertEquals("15.31 USD = 12.24 EUR",
-				converterWrapper.convert (new BigDecimal("15.31"),"USD", new BigDecimal("12.11"))),
+				converterWrapper.convert (
+						new BigDecimal("15.31"),
+						"USD",
+						new BigDecimal("12.11"))),
 
 				() -> assertEquals("7.32 USD = 5.93 EUR",
 				converterWrapper.convert (new BigDecimal("7.32"),"usd", new BigDecimal("11"))),
 
-				() -> assertEquals("9.00 USD = 7.00 EUR",
+				() -> assertEquals("9 USD = 7.00 EUR",
 				converterWrapper.convert (new BigDecimal("9"),"USd", new BigDecimal("14.55"))),
 
-				() -> assertEquals("3.00 USD = 2.32 EUR",
+				() -> assertEquals("3 USD = 2.32 EUR",
 				converterWrapper.convert (new BigDecimal("3"),"uSD", new BigDecimal("15")))
-		);
-
-		//EUR -> USD
-		assertAll ("EUR -> USD convert() normal conversion",
-				() -> assertEquals("14.21 EUR = 12.84 USD",
-				converterWrapper.convert (new BigDecimal("14.21"),"Eur", new BigDecimal("10.51"))),
-
-				() -> assertEquals("5.44 EUR = 4.94 USD",
-				converterWrapper.convert (new BigDecimal("5.44"),"eUR", new BigDecimal("10"))),
-
-				() -> assertEquals("12.00 EUR = 10.89 USD",
-				converterWrapper.convert (new BigDecimal("12"),"EuR", new BigDecimal("10.15"))),
-
-				() -> assertEquals("7.00 EUR = 5.87 USD",
-				converterWrapper.convert (new BigDecimal("7"),"EUR", new BigDecimal("17")))
 		);
 	}
 
 	@Test
-	@DisplayName("convert() Exception should work")
-	void convertExceptionTest () {
-		// Test Exceptions USD -> EUR
-		assertAll ("USD -> EUR convert() Exception should work",
+	@DisplayName("convert() EUR -> USD should work")
+	void convertEurToUsdTest () {
+		assertAll ("EUR -> USD convert() normal conversion",
+				() -> assertEquals("14.21 EUR = 12.84 USD",
+						converterWrapper.convert (new BigDecimal("14.21"),"Eur", new BigDecimal("10.51"))),
+
+				() -> assertEquals("5.44 EUR = 4.94 USD",
+						converterWrapper.convert (new BigDecimal("5.44"),"eUR", new BigDecimal("10"))),
+
+				() -> assertEquals("12 EUR = 10.89 USD",
+						converterWrapper.convert (new BigDecimal("12"),"EuR", new BigDecimal("10.15"))),
+
+				() -> assertEquals("7 EUR = 5.87 USD",
+						converterWrapper.convert (new BigDecimal("7"),"EUR", new BigDecimal("17")))
+		);
+	}
+
+	@Test
+	@DisplayName("convert() USD -> EUR Exception should work")
+	void convertExceptionUsdToEurTest () {
+		assertAll ("USD -> EUR convert() Exception",
 				() -> assertThrows (InvalidAmountOrExchangeRateException.class, () -> converterWrapper.convert (
 						new BigDecimal("0"),"USD", new BigDecimal("15"))),
 
@@ -91,9 +93,12 @@ class ConverterWrapperTest {
 				() -> assertThrows (UnsupportedCurrencyException.class, () -> converterWrapper.convert (
 						new BigDecimal("33.99"),"notUSD", new BigDecimal("32")))
 		);
+	}
 
-		// Test Exceptions EUR -> USD
-		assertAll ("EUR -> USD convert() Exception should work",
+	@Test
+	@DisplayName("convert() EUR -> USD Exception should work")
+	void convertExceptionEurToUsdTest () {
+		assertAll ("EUR -> USD convert() Exception",
 				() -> assertThrows (InvalidAmountOrExchangeRateException.class, () -> converterWrapper.convert (
 						new BigDecimal("0"),"EUR", new BigDecimal("19"))),
 

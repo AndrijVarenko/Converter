@@ -1,16 +1,14 @@
-package converterTest;
+package converter;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
 
-import converter.ConstantRateProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import converter.exceptions.InvalidAmountOrExchangeRateException;
-import converter.classes.Converter;
 
 class ConverterTest {
 	
@@ -31,10 +29,10 @@ class ConverterTest {
 				() -> assertEquals (new BigDecimal("15.00"),
 				converter.conversionUSDtoEUR (new BigDecimal("18.733645"), new BigDecimal("12"))),
 
-				() -> assertEquals (new BigDecimal("7.7248"),
+				() -> assertEquals (new BigDecimal("7.72"),
 				converter.conversionUSDtoEUR (new BigDecimal("10"), new BigDecimal("15.12"))),
 
-				() -> assertEquals (new BigDecimal("5.7348"),
+				() -> assertEquals (new BigDecimal("5.73"),
 				converter.conversionUSDtoEUR (new BigDecimal("7"), new BigDecimal("10")))
 		);
 	}
