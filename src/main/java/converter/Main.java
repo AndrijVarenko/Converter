@@ -16,10 +16,10 @@ public class Main {
      * The method receives incoming arguments and displays the
      * console converting results.
      *
-     * @param args  String array arguments (not 'null' and not empty).
+     * @param args  String array arguments.
      *
-     * @see         RunConvertor class, method - start (String[] args).
-     * @see         ConverterWrapper class, method - convert (amount, input_currency, fee).
+     * @see         RunConvertor
+     * @see         ConverterWrapper
      *
      */
     public static void main(String[] args) {

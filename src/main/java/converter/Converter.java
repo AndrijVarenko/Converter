@@ -26,8 +26,8 @@ public class Converter {
 	 *
 	 * @param rateProvider	set a IRateProvider data type.
 	 * @param scale			the int data type (min = '0', max = '2E31 - 1' '').
-	 * @see					IRateProvider interface.
-	 * @see					BigDecimal class, method - setScale(int newScale, RoundingMode roundingMode).
+	 * @see					IRateProvider
+	 * @see					BigDecimal
 	 *
 	 */
 	public Converter(IRateProvider rateProvider, int scale) {
@@ -50,7 +50,7 @@ public class Converter {
 	 * 					the exchange rate.
 	 * @throws 			InvalidAmountOrExchangeRateException if the amount USD is null or negative or
 	 * 					fee is null, negative or over one hundred.
-	 * @see				ConstantRateProvider class.
+	 * @see				ConstantRateProvider
 	 *
 	 */
 	public BigDecimal conversionUSDtoEUR (BigDecimal amount, BigDecimal fee)
@@ -78,7 +78,7 @@ public class Converter {
 	 * 					the exchange rate.
 	 * @throws 			InvalidAmountOrExchangeRateException if the amount EUR is null or negative or
 	 * 					fee is null, negative or over one hundred.
-	 * @see				ConstantRateProvider class.
+	 * @see				ConstantRateProvider
 	 *
 	 */
 	public BigDecimal conversionEURtoUSD (BigDecimal amount, BigDecimal fee)

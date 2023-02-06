@@ -10,7 +10,7 @@ import java.math.BigDecimal;
  * There are no requirements for IRateProvider implementation
  * but interfaces without the implementation are considered a code smell sometimes.
  *
- * @see         IRateProvider interface.
+ * @see         IRateProvider
  *
  */
 public class ConstantRateProvider implements IRateProvider {
@@ -20,7 +20,7 @@ public class ConstantRateProvider implements IRateProvider {
      * Data type - BigDecimal.
      *
      * @return      BigDecimal data type, giving the exchange rate for convert USD to EUR.
-     * @see         IRateProvider interface, const RATE_USD_TO_EUR.
+     * @see         IRateProvider
      *
      */
     @Override
@@ -33,7 +33,7 @@ public class ConstantRateProvider implements IRateProvider {
      * Data type - BigDecimal.
      *
      * @return      BigDecimal data type, giving the exchange rate for convert EUR to USD.
-     * @see         IRateProvider interface, const RATE_EUR_TO_USD.
+     * @see         IRateProvider
      *
      */
     @Override

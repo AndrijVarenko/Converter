@@ -8,6 +8,8 @@ package converter.exceptions;
  * - exchange (fee) is a negative;
  * - exchange (fee) is equals or more than 100 (units of measurement - percent).
  *
+ * @see RuntimeException
+ *
  */
 public class InvalidAmountOrExchangeRateException extends RuntimeException {
 	
@@ -15,6 +17,8 @@ public class InvalidAmountOrExchangeRateException extends RuntimeException {
 	 * Constructor with message.
 	 * <p>
 	 * Message: "Exception: Incorrectly specified amount/exchange".
+	 *
+	 * @see RuntimeException
 	 *
 	 */
 	public InvalidAmountOrExchangeRateException() {

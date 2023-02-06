@@ -51,7 +51,7 @@ public class ConverterWrapper {
 	 * @throws 			UnsupportedCurrencyException if the input currency not supported.
 	 * @throws 			InvalidAmountOrExchangeRateException if the amount input currency is null or
 	 * 					negative or fee is null, negative or over one hundred.
-	 * @see				SupportedCurrencies enum.
+	 * @see				SupportedCurrencies
 	 *
 	 */
 	public String convert (BigDecimal amount, String currency, BigDecimal fee)

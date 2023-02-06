@@ -26,8 +26,9 @@ public class RunConvertor {
      * The method receives incoming arguments and displays the
      * console converting results.
      *
-     * @param args  String array arguments (not 'null' and not empty).
-     * @see         ConverterWrapper class, method - convert (amount, input_currency, fee).
+     * @param args  String array arguments (every argument not 'null' and not empty).
+     *              Array args may be 'null' or empty.
+     * @see         ConverterWrapper
      *
      */
     public void start (String[] args) {
