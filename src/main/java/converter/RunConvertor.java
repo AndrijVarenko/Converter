@@ -16,6 +16,7 @@ public class RunConvertor {
     private BigDecimal amount;
     private BigDecimal fee;
     private String input_currency;
+    private String output_currency = "";
 
     /**
      * Method start (String[] args) sending input arguments to method
@@ -33,7 +34,7 @@ public class RunConvertor {
      */
     public void start (String[] args) {
         String MESSAGE_INCORRECT_DATA_INPUT = "Incorrect data input. Please, repeat Enter data input.";
-        boolean re_input;
+        boolean reInput;
         do {
             try {
                 if (args != null) {
@@ -46,6 +47,9 @@ public class RunConvertor {
                     }
 
                     switch (args.length) {
+                        case 4:
+                            start(args[0], args[1], args[2], args[3]);
+                            break;
                         case 3:
                             start(args[0], args[1], args[2]);
                             break;
@@ -62,41 +66,54 @@ public class RunConvertor {
                 } else {
                     start();
                 }
-                re_input = false;
+                print (amount, input_currency, output_currency, fee);
+                reInput = false;
             } catch (InvalidAmountOrExchangeRateException | UnsupportedCurrencyException ignore) {
-                re_input = true;
+                reInput = true;
                 System.out.println(MESSAGE_INCORRECT_DATA_INPUT);
             }
-        } while (re_input);
+        } while (reInput);
 
     }
 
-    private void start (String input_amount, String input_currency, String input_fee) {
+    private void start (String amount, String input_currency, String output_currency, String fee) {
+
+        start (amount, input_currency, fee);
+
+        this.output_currency = output_currency;
+    }
+
+    private void start (String amount, String input_currency, String fee) {
+
+        start (amount, input_currency);
 
         try {
-            amount = new BigDecimal(input_amount);
+            SupportedCurrencies.valueOf(fee.toUpperCase());
+            this.output_currency = fee;
+            //If 'fee' is 'output currency'
+            //For example: 5.1 USD EUR => amount = 5.1, input_currency = USD, output_currency = EUR, fee = 0 (%);
+        } catch (IllegalArgumentException ignored) {
+            try {
+                this.fee = new BigDecimal(fee);
+                //If 'fee' is 'fee'
+                //For example: 7.3 USD 10 => amount = 7.3, input_currency = USD, output_currency = EUR, fee = 10 (%);
+            } catch (NumberFormatException numberFormatException) {
+                System.out.printf ("Incorrect '%s'. Please, repeat Enter '%s'\n", "fee", "fee");
+            }
+        }
+    }
+
+    private void start (String amount, String input_currency) {
+
+        this.input_currency = input_currency;
+
+        try {
+            this.amount = new BigDecimal(amount);
         } catch (NumberFormatException numberFormatException) {
             System.out.printf ("Incorrect '%s'. Please, repeat Enter '%s'\n", "amount", "amount");
         }
 
-        try {
-            fee = new BigDecimal(input_fee);
-        } catch (NumberFormatException numberFormatException) {
-            System.out.printf ("Incorrect '%s'. Please, repeat Enter '%s'\n", "fee", "fee");
-        }
-
-        print (amount, input_currency, fee);
-    }
-
-    private void start (String input_amount, String input_currency) {
-
-        try {
-            amount = new BigDecimal(input_amount);
-        } catch (NumberFormatException numberFormatException) {
-            System.out.printf ("Incorrect '%s'. Please, repeat Enter '%s'\n", "amount", "amount");
-        }
-
-        print (amount, input_currency, BigDecimal.ZERO);
+        this.fee = BigDecimal.ZERO;
     }
 
     private void start() {
@@ -138,16 +155,20 @@ public class RunConvertor {
         } while (re_input);
 
         scanner.close();
-
-        print (amount, input_currency, fee);
     }
 
-    private void print (BigDecimal amount, String input_currency, BigDecimal fee) {
-        System.out.format ("\nYou input:" +
-                        "\namount: '%s'" +
-                        "\ninput_currency: '%s'" +
-                        "\nfee: '%s'" +
-                        "\nResult: '%s'\n",
-                amount, input_currency, fee, new ConverterWrapper().convert (amount, input_currency, fee));
+    private void print (BigDecimal amount, String input_currency, String output_currency, BigDecimal fee) {
+        String print_output_currency = output_currency == null || output_currency.isEmpty() ? "" :
+                String.format ("output_currency: '%s'\n", output_currency);
+
+        System.out.format("\nYou input:\n" +
+                            "amount: '%s'\n" +
+                            "input_currency: '%s'\n" +
+                            "%s" +
+                            "fee: '%s'\n\n" +
+                            "Result: '%s'\n",
+                    amount, input_currency, print_output_currency, fee,
+                    new ConverterWrapper().convert(amount, input_currency, fee));
+
     }
 }
